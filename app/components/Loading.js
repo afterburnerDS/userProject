@@ -1,39 +1,37 @@
-var React = require('react');
-var PropTypes = require('prop-types');
- var styles = {
+import React from 'react'
+import PropTypes from 'prop-types'
+
+const styles = {
   content: {
     textAlign: 'center',
     fontSize: '35px'
   }
 };
- class Loading extends React.Component {
-  constructor(props) {
-    super(props);
-    this.originalText = props.text;
-    this.state = {
-      text: this.originalText,
-    };
+
+class Loading extends React.Component {
+  static propTypes = {
+    text: PropTypes.string.isRequired,
+    speed: PropTypes.number.isRequired,
+  }
+  static defaultProps = {
+    text: 'Loading',
+    speed: 300
+  }
+  state = {
+    text: this.props.text
   }
   componentDidMount() {
-    var stopper = this.originalText + '...'
-    this.interval = setInterval(function () {
-      if (this.state.text === stopper) {
-        this.setState(function () {
-          return {
-            text: this.originalText
-          }
-        });
-      } else {
-        this.setState(function (prevState) {
-          return {
-            text: prevState.text + '.'
-          }
-        })
-      }
-    }.bind(this), this.props.speed)
+    const { text, speed } = this.props
+    const stopper = text + '...';
+
+    this.interval = window.setInterval(() => {
+      this.state.text === stopper
+        ? this.setState(() => ({ text: this.props.text }))
+        : this.setState((prevState) => ({ text: prevState.text + '.' }))
+    }, speed)
   }
   componentWillUnmount() {
-    window.clearInterval(this.interval)
+    window.clearInterval(this.interval);
   }
   render() {
     return (
@@ -43,12 +41,5 @@ var PropTypes = require('prop-types');
     )
   }
 }
- Loading.propTypes = {
-  text: PropTypes.string,
-  speed: PropTypes.number
-};
- Loading.defaultProps = {
-  text: 'Loading',
-  speed: 300
-};
- module.exports = Loading;
+
+export default Loading;
